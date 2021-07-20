@@ -1,0 +1,29 @@
+/**
+ * 
+ */
+
+/**
+ * @author User
+ *
+ */
+public class LaunchMeetScheduler {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		
+		AppStorage newStorage = new AppStorage();
+		
+		String introduction = "Welcome to FlyFin Meeting Scheduler! What would you like to do?" + "\r\n"
+				+ "Enter 1 to Book a New Meeting" + "\r\n"
+				+ "Enter 2 to Find Free Time Slots of Employees in a given Interval" + "\r\n"
+				+ "Enter 3 to Print All Employees' Meeting Info" + "\r\n"
+				+ "Enter 4 to Print All Meeting Rooms' Meeting Info";
+		
+		
+		// TODO Auto-generated method stub
+
+	}
+
+}

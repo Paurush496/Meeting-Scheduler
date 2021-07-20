@@ -1,0 +1,14 @@
+package meetManager;
+
+import org.joda.time.DateTime;
+
+import employees.Employee;
+import meeting.MeetingRoom;
+
+public abstract class MeetingOrganizer {
+
+	protected Employee[] allEmployees;
+	protected MeetingRoom[] allMeetingRooms;
+	
+	public abstract String organizeNewMeet(int employeeId, DateTime startTime, DateTime endTime);
+}

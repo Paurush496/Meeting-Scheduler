@@ -1,0 +1,167 @@
+/**
+ * 
+ */
+package meetManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
+import employees.Employee;
+import meeting.MeetingInfo;
+import meeting.MeetingRoom;
+
+/**
+ * @author User
+ *
+ */
+public class MeetScheduler extends AppStorage {
+
+	public String organizeNewMeet(int employeeId, DateTime foStartTime, DateTime foEndTime) {
+		Employee employee = null;
+		String output = null;
+		Interval meetingInterval = new Interval(foStartTime, foEndTime);
+		for(int i=0; i<getAllEmployees().length; i++) {
+			if (employeeId == getAllEmployees()[i].getEmployeeId()) {
+				employee = getAllEmployees()[i];
+				break;
+			}
+		}
+		if (employee == null) {
+			output = "No employee found with id " + employeeId;
+			return output;
+		}
+		List<MeetingInfo> employeeMeetings = employee.getEmployeeMeetings();
+		for(int i=0; i<employeeMeetings.size(); i++) {
+			if (employeeMeetings.get(i).getMeetingInterval().overlaps(meetingInterval)) {
+				output = "Conflicting with meeting " + employeeMeetings.get(i).getMeetingId();
+				break;
+			}
+		}
+		for(int i=0; i<getAllMeetingRooms().length; i++) {
+			MeetingRoom meetingRoom = getAllMeetingRooms()[i];
+			if (!meetingRoom.verifyIntervalOverlap(meetingInterval)) {
+				String meetingId = meetingRoom.addNewMeeting(meetingInterval, employeeId);
+				output = "Meeting booked successfully with meeting id " + meetingId;
+				if (i != getAllMeetingRooms().length-1) sortMeetingRoomUp(i);
+				break;
+			}
+		}
+		if(output.isBlank()) {
+			output = "All rooms busy for the given time interval.";
+		}		
+		return output;
+	}
+
+	public void sortMeetingRoomUp(int index) {
+		MeetingRoom modifiedMeetingRoom = getAllMeetingRooms()[index];
+		MeetingRoom nextMeetingRoom = getAllMeetingRooms()[index+1];
+		int totalRoomMeets = modifiedMeetingRoom.getMeetingRoomInfo().size();
+		int totalNextRoomMeets = nextMeetingRoom.getMeetingRoomInfo().size();
+		if (totalNextRoomMeets < totalRoomMeets) {
+			getAllMeetingRooms()[index] = nextMeetingRoom;
+			getAllMeetingRooms()[index+1] = modifiedMeetingRoom;
+		}
+	}
+
+	public List<String> findFreeTimeSlots(int[] employeeIds, DateTime foStartTime, DateTime foEndTime) {
+		Interval freeInterval = new Interval(foStartTime, foEndTime);
+		Iterator<Employee> searchEmployees = getSortedSearchEmployeesList(employeeIds, getAllEmployees());
+		Iterator<Interval> freeTimeSlots = null;
+		List<Interval> mutualFreeTimeSlot = new ArrayList<>();
+		
+		while (searchEmployees.hasNext()) {
+			Employee currentSearchEmployee = searchEmployees.next();
+			while(freeTimeSlots.hasNext()) {
+				freeInterval = freeTimeSlots.next();
+				mutualFreeTimeSlot.addAll(getFreeTimeSlots(currentSearchEmployee,freeInterval));
+			}
+			if (!mutualFreeTimeSlot.isEmpty())
+				freeTimeSlots = mutualFreeTimeSlot.iterator();
+			else if (mutualFreeTimeSlot.isEmpty() && freeTimeSlots != null)
+				return null;
+			else freeTimeSlots = getFreeTimeSlots(currentSearchEmployee,freeInterval).iterator();			
+		}	
+		
+		return null;
+	}
+	
+	public Iterator<Employee> getSortedSearchEmployeesList(int[] searchEmployeesIds, Employee[] allEmployees) {
+		List<Employee> searchEmployees = new ArrayList<Employee>();
+		for (int i=0; i<searchEmployeesIds.length; i++) {
+			for (int j=0; j<allEmployees.length; j++) {
+				if (searchEmployeesIds[i] == allEmployees[j].getEmployeeId()) {
+					searchEmployees.add(allEmployees[j]);
+					break;
+				}
+			}
+		}
+		Collections.sort(searchEmployees, (e1,e2) -> e2.getEmployeeMeetings().size() 
+				- e1.getEmployeeMeetings().size());
+		return searchEmployees.iterator();
+	}
+	
+	public List<Interval> getFreeTimeSlots(Employee employee, Interval freeInterval) {
+		List<Interval> gaps = new ArrayList<>();
+		Iterator<Interval> overlappingIntervals = getSortedOverlappingIntervals(employee,freeInterval);
+		if (overlappingIntervals.hasNext()) { 
+			gaps = getIntervalGaps(overlappingIntervals, freeInterval.getStart(),freeInterval.getEnd()); 
+		}
+		return gaps;
+	}
+	
+	public Iterator<Interval> getSortedOverlappingIntervals(Employee searchEmployee, Interval searchInterval) {
+		List<MeetingInfo> employeeMeetings = searchEmployee.getEmployeeMeetings();
+		List<Interval> overlappingIntervals = new ArrayList<Interval>();
+		employeeMeetings.forEach(meeting -> {
+			Interval overlap = searchInterval.overlap(meeting.getMeetingInterval());
+			if (overlap != null) {
+				overlappingIntervals.add(overlap);
+			}
+		});
+		Collections.sort(overlappingIntervals, new Comparator<Interval>() {
+			@Override
+			public int compare(Interval i1, Interval i2) {
+				if (i1.isBefore(i2)) return 1;
+				else return -1;
+			}
+		});
+		return overlappingIntervals.iterator();
+	}
+	
+	public List<Interval> getIntervalGaps(Iterator<Interval> overlaps, DateTime foStartTime, DateTime foEndTime) {
+		List<Interval> gaps = new ArrayList<>();
+		Interval prevOverlap = null;
+		while (overlaps.hasNext()) {
+			Interval overlap = overlaps.next();
+			DateTime startTime = overlap.getStart();
+			DateTime endTime = overlap.getEnd();
+			if (startTime.isEqual(foStartTime) && endTime.isBefore(foEndTime)) {
+				if (!overlaps.hasNext()) 
+					gaps.add(new Interval(endTime, foEndTime));
+				else {
+					Interval nextOverlap = overlaps.next();
+					if (endTime.isBefore(nextOverlap.getStart())) {
+						gaps.add(new Interval(endTime,nextOverlap.getStart()));
+					}
+					prevOverlap = nextOverlap;
+				}
+			} else if (prevOverlap == null && startTime.isAfter(foStartTime)) { 
+				gaps.add(new Interval(foStartTime,startTime));
+				prevOverlap = overlap;
+			} else if (prevOverlap != null && prevOverlap.getEnd().isBefore(startTime)) {
+				gaps.add(new Interval(prevOverlap.getEnd(),startTime));
+				if (!overlaps.hasNext() && endTime.isBefore(foEndTime)) {
+					gaps.add(new Interval(endTime, foEndTime));
+				} else prevOverlap = overlap;
+			}
+		}
+		return gaps;
+	}
+
+}

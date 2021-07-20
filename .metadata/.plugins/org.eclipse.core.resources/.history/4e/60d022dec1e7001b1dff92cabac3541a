@@ -1,0 +1,8 @@
+package meeting;
+
+import java.util.List;
+
+public class MeetingRoom {
+
+	List<MeetingInfo> meetingRoomInfo;
+}

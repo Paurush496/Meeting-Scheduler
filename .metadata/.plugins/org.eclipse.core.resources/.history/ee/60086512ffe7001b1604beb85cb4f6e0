@@ -1,0 +1,67 @@
+/**
+ * 
+ */
+package meetManager;
+
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
+import employees.Employee;
+import meeting.MeetingRoom;
+
+/**
+ * @author User
+ *
+ */
+public class MeetScheduler extends AppStorage {
+
+	public String organizeNewMeet(int employeeId, DateTime startTime, DateTime endTime) {
+		Employee employee = null;
+		String output = "";
+		Interval meetingInterval = new Interval(startTime, endTime);
+		for(int i=0; i<getAllEmployees().length; i++) {
+			if (employeeId == getAllEmployees()[i].getEmployeeId()) {
+				employee = getAllEmployees()[i];
+				break;
+			}
+		}
+		employee.getEmployeeMeetings().forEach(meeting -> {
+			if (meeting.getMeetingInterval().overlaps(meetingInterval)) {
+				output = "Conflicting with meeting " + meeting.getMeetingId();
+			}
+		});
+		for(int i=0; i<getAllMeetingRooms().length; i++) {
+			MeetingRoom meetingRoom = getAllMeetingRooms()[i];
+			if (!meetingRoom.verifyIntervalOverlap(meetingInterval)) {
+				String meetingId = meetingRoom.addNewMeeting(meetingInterval, employeeId);
+				output = "Meeting booked successfully with meeting id " + meetingId;
+				if (i != getAllMeetingRooms().length-1) sortMeetingRoomUp(i);
+				break;
+			}
+		}
+		if(output.isBlank()) {
+			output = "All rooms busy for the given time interval.";
+		}
+		
+		return output;
+	}
+
+	public void sortMeetingRoomUp(int index) {
+		int totalRoomMeets = getAllMeetingRooms()[index].getMeetingRoomInfo().size();
+		int totalNextRoomMeets = getAllMeetingRooms()[index+1].getMeetingRoomInfo().size();
+		if (totalNextRoomMeets < totalRoomMeets) {
+			MeetingRoom modifiedMeetingRoom = getAllMeetingRooms()[index];
+			MeetingRoom nextMeetingRoom = getAllMeetingRooms()[index+1];
+			getAllMeetingRooms()[index] = nextMeetingRoom;
+			getAllMeetingRooms()[index+1] = modifiedMeetingRoom;
+		}
+	}
+
+	public List<String> findFreeTimeSlots(int[] employeeIds, DateTime startTime, DateTime endTime) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,5 @@
+package meetManager;
+
+public abstract class MeetingOrganizer {
+
+}

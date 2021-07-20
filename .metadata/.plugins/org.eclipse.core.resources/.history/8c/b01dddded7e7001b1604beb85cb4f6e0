@@ -1,0 +1,11 @@
+package meetManager;
+
+import employees.Employee;
+import meeting.MeetingRoom;
+
+public abstract class MeetingOrganizer {
+
+	protected Employee[] allEmployees;
+	protected MeetingRoom[] allMeetingRooms;
+	
+}

@@ -1,0 +1,31 @@
+package meetManager;
+
+import java.util.Arrays;
+
+import employees.Employee;
+import meeting.MeetingRoom;
+
+public abstract class AppStorage {
+
+	protected Employee[] allEmployees;
+	protected MeetingRoom[] allMeetingRooms;
+	
+	public Employee[] getAllEmployees() {
+		return allEmployees;
+	}
+	public void setAllEmployees(Employee[] allEmployees) {
+		this.allEmployees = allEmployees;
+	}
+	public MeetingRoom[] getAllMeetingRooms() {
+		return allMeetingRooms;
+	}
+	public void setAllMeetingRooms(MeetingRoom[] allMeetingRooms) {
+		this.allMeetingRooms = allMeetingRooms;
+	}
+	@Override
+	public String toString() {
+		return "AppStorage [allEmployees=" + Arrays.toString(allEmployees) + ", allMeetingRooms="
+				+ Arrays.toString(allMeetingRooms) + "]";
+	}
+	
+}

@@ -1,0 +1,33 @@
+package employees;
+
+import java.util.List;
+
+import org.joda.time.Interval;
+
+import meeting.MeetingInfo;
+
+public class Employee {
+	
+	int employeeId;
+	List<MeetingInfo> employeeMeetings;
+	
+	public MeetingInfo findOverlappingMeet (Interval meetInterval) {
+		return null;
+	}
+	
+	public List<MeetingInfo> getEmployeeMeetings() {
+		return employeeMeetings;
+	}
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void addNewMeeting (MeetingInfo newMeeting) {
+		
+	}
+	
+	public void removeMeeting (MeetingInfo newMeeting) {
+		
+	}
+}

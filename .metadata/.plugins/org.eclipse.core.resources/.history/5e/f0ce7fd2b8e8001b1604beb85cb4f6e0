@@ -1,0 +1,44 @@
+package employees;
+
+import java.util.List;
+
+import org.joda.time.Interval;
+
+import meeting.MeetingInfo;
+
+public class Employee {
+	
+	int employeeId;
+	List<MeetingInfo> employeeMeetings;
+	
+	public Employee(int employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String findOverlappingMeet (Interval meetInterval) {
+		if (!getEmployeeMeetings().isEmpty()) {
+			for(int i=0; i<employeeMeetings.size(); i++) {
+				if (employeeMeetings.get(i).getMeetingInterval().overlaps(meetInterval)) {
+					return employeeMeetings.get(i).getMeetingId();
+				}
+			}			
+		}
+		return null;
+	}
+	
+	public List<MeetingInfo> getEmployeeMeetings() {
+		return employeeMeetings;
+	}
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void addNewMeeting (MeetingInfo newMeeting) {
+		
+	}
+	
+	public void removeMeeting (MeetingInfo newMeeting) {
+		
+	}
+}

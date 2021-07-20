@@ -1,0 +1,23 @@
+/**
+ * 
+ */
+package meetManager;
+
+import java.util.List;
+
+import org.joda.time.DateTime;
+/**
+ * @author User
+ *
+ */
+public interface MeetingOperations {
+	
+	public String organizeNewMeet(int employeeId, DateTime startTime, DateTime endTime);
+	
+	public List<String> findFreeTimeSlots(int[] employeeIds, DateTime startTime, DateTime endTime);
+	
+	public String addEmployeesToMeeting(int[] employeeIds, String meetingId);
+	
+	public String removeEmployeesFromMeeting(int[] employeeIds, String meetingId);
+	
+}

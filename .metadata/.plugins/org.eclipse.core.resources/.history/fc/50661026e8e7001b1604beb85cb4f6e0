@@ -1,0 +1,29 @@
+package meeting;
+
+import org.joda.time.Interval;
+
+public class MeetingInfo {
+
+	Interval meetingInterval;
+	int organizerId;
+	String meetingId;
+	
+	public Interval getMeetingInterval() {
+		return meetingInterval;
+	}
+	public void setMeetingInterval(Interval meetingInterval) {
+		this.meetingInterval = meetingInterval;
+	}
+	public int getOrganizerId() {
+		return organizerId;
+	}
+	public void setOrganizerId(int organizerId) {
+		this.organizerId = organizerId;
+	}
+	public String getMeetingId() {
+		return meetingId;
+	}
+	public void setMeetingId(String meetingId) {
+		this.meetingId = meetingId;
+	}
+}

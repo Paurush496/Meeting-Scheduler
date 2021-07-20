@@ -1,0 +1,32 @@
+package LaunchApplication;
+
+
+import java.util.Arrays;
+
+import employees.Employee;
+import meeting.MeetingRoom;
+
+public abstract class AppStorage {
+
+	protected static Employee[] allEmployees;
+	protected static MeetingRoom[] allMeetingRooms;
+	
+	public Employee[] getAllEmployees() {
+		return allEmployees;
+	}
+	public void setAllEmployees(Employee[] allEmployees) {
+		AppStorage.allEmployees = allEmployees;
+	}
+	public MeetingRoom[] getAllMeetingRooms() {
+		return allMeetingRooms;
+	}
+	public void setAllMeetingRooms(MeetingRoom[] allMeetingRooms) {
+		AppStorage.allMeetingRooms = allMeetingRooms;
+	}
+	@Override
+	public String toString() {
+		return "AppStorage [allEmployees=" + Arrays.toString(allEmployees) + ", allMeetingRooms="
+				+ Arrays.toString(allMeetingRooms) + "]";
+	}
+	
+}

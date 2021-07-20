@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package meetManager;
+
+/**
+ * @author User
+ *
+ */
+public interface MeetingOperations {
+
+}

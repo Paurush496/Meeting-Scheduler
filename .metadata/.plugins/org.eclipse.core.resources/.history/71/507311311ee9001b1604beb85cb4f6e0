@@ -1,0 +1,121 @@
+package LaunchApplication;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import employees.Employee;
+import meetManager.MeetScheduler;
+import meeting.MeetingInfo;
+
+public class ManageInputOutput {
+
+	public static void processInput(String input, AppStorage data) throws IOException {
+		switch(input) {
+		case "1":
+			bookNewMeeting();
+			break;
+		case "2":
+			findFreeTimeSlots();
+			break;
+		case "3":
+			printAllEmployees();
+			break;
+		case "4":
+			System.out.println(Arrays.toString(storage.getAllMeetingRooms()));
+			break;
+		default: break;
+		}		
+	}
+	
+	private static void bookNewMeeting() throws IOException {
+		System.out.println("Please Enter Employee Id of the Organizer: ");
+		System.out.flush();
+		String input;
+		int employeeId = 0;
+		DateTime startTime = new DateTime();
+		DateTime endTime = new DateTime();
+		// Format for input
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("HH:mm:ss");
+		java.io.BufferedReader stndin;
+		stndin = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+		if ((input = stndin.readLine()) != null) {
+			employeeId = Integer.valueOf(input).intValue();
+		}
+		System.out.println("Please Enter Start Time of the Meeting (in HH:mm:ss): ");
+		System.out.flush();
+		if ((input = stndin.readLine()) != null) {
+			// Parsing the date
+			startTime = dtf.parseDateTime(input);
+		}
+		System.out.println("Start Time " + startTime.toString());
+		System.out.println("Please Enter End Time of the Meeting (in HH:mm:ss): ");
+		System.out.flush();
+		if ((input = stndin.readLine()) != null) {
+			// Parsing the date
+			endTime = dtf.parseDateTime(input);
+		}
+		System.out.println("End Time " + endTime.toString());
+		String output = ((MeetScheduler) storage).organizeNewMeet(employeeId, startTime, endTime);
+		System.out.println(output);
+	}
+	
+	private static void findFreeTimeSlots() throws IOException {
+		java.io.BufferedReader stndin;
+		stndin = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+		System.out.println("Please Enter comma separated Employee Ids: ");
+		System.out.flush();
+		String input;
+		int employeeIds[] = null;
+		DateTime startTime = new DateTime();
+		DateTime endTime = new DateTime();
+		// Format for input
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("HH:mm:ss");
+		if ((input = stndin.readLine()) != null) {
+			String[] stringEmpIds = input.split(",");
+			employeeIds = new int[stringEmpIds.length];
+			for (int i=0; i<stringEmpIds.length; i++) {
+				employeeIds[i] = Integer.valueOf(stringEmpIds[i]).intValue();
+			}
+		}
+		System.out.println("Please Enter Start Time of the Interval (in HH:mm:ss): ");
+		System.out.flush();
+		if ((input = stndin.readLine()) != null) {
+			// Parsing the date
+			startTime = dtf.parseDateTime(input);
+		}
+		System.out.println("Start Time " + startTime.toString());
+		System.out.println("Please Enter End Time of the Interval (in HH:mm:ss): ");
+		System.out.flush();
+		if ((input = stndin.readLine()) != null) {
+			// Parsing the date
+			endTime = dtf.parseDateTime(input);
+		}
+		System.out.println("End Time " + endTime.toString());
+		List<String> freeTimeSlots = ((MeetScheduler) storage).findFreeTimeSlots(employeeIds, startTime, endTime);
+		System.out.println("Free Time Slots: " + freeTimeSlots.toString());
+	}
+
+	private static void printAllEmployees() {
+		Employee[] allEmployees = storage.getAllEmployees();
+		String employeeString = "";
+		for (int i=0; i<allEmployees.length; i++) {
+			String employee = "[ Employee " + allEmployees[i].getEmployeeId() + ": [";
+			List<MeetingInfo> meetings = allEmployees[i].getEmployeeMeetings();
+			for (int j=0; j<meetings.size(); j++) {
+				String meetInfo = "[" + meetings.get(j).getOrganizerId() + " , " +
+						meetings.get(j).getMeetingInterval().getStart().getMinuteOfDay() + "mins - " +
+						meetings.get(j).getMeetingInterval().getEnd().getMinuteOfDay() + "mins , " + 
+						meetings.get(j).getMeetingId() + "]";
+				employee += meetInfo;
+			}
+			employee += "]]" + "\r\n";
+			employeeString += employee;
+		}
+		System.out.println("All Employees: " + employeeString);
+	}
+}

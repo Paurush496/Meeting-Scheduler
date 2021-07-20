@@ -1,0 +1,81 @@
+/**
+ * 
+ */
+package meetManager;
+
+import java.util.List;
+
+import LaunchApplication.AppStorage;
+import employees.Employee;
+import meeting.MeetingInfo;
+import meeting.MeetingRoom;
+
+/**
+ * @author User
+ *
+ */
+public class ManageMeeting extends AppStorage {
+
+	public String addEmployeesToMeeting(int[] employeeIds, String meetingId) {
+		String message = null;
+		MeetingInfo meeting = validateMeetId(meetingId);
+		if (meeting == null) {
+			return "Invalid Meeting Id " + meetingId;
+		}
+		List<Employee> employees = getEmployeesSubset(employeeIds);
+		for(Employee employee : employees) {
+			String messagePrefix = "Employee " + employee.getEmployeeId();
+			String conflictMeetId;
+			if (!employee.getEmployeeMeetings().isEmpty() && 
+					employee.getEmployeeMeetings().contains(meeting)) {
+				message += messagePrefix + " is already added. \r\n";
+			} else if ((conflictMeetId = employee.findOverlappingMeet(meeting.getMeetingInterval())) != null) {
+				message += messagePrefix + " has conflict with meeting " + conflictMeetId + "\r\n";
+			} else {
+				employee.addNewMeeting(meeting);
+				message += messagePrefix + " added successfully. \r\n";
+			}
+		}
+		if (message == null) {
+			return "No valid employees found.";
+		}
+		return message;
+	}
+
+	public MeetingInfo validateMeetId(String meetingId) {
+		String meetingRoomId = meetingId.substring(0, 3);
+		for(int i=0; i<getAllMeetingRooms().length; i++) {
+			MeetingRoom meetingRoom = getAllMeetingRooms()[i];
+			if (meetingRoom.getMeetingRoomId().equals(meetingRoomId)) {
+				return meetingRoom.findMeetingToManage(meetingId);
+			}
+		}
+		return null;
+	}
+	
+	public String removeEmployeesFromMeeting(int[] employeeIds, String meetingId) {
+		String message = null;
+		MeetingInfo meeting = validateMeetId(meetingId);
+		if (meeting == null) {
+			return "Invalid Meeting Id " + meetingId;
+		}
+		List<Employee> employees = getEmployeesSubset(employeeIds);
+		for(Employee employee : employees) {
+			String messagePrefix = "Employee " + employee.getEmployeeId();
+			if (employee.getEmployeeId() == meeting.getOrganizerId()) {
+				message += messagePrefix + " is the organizer of this meeting. Cannot remove organizer. \r\n";
+			} else if (!employee.getEmployeeMeetings().isEmpty() && 
+					!employee.getEmployeeMeetings().contains(meeting)) {
+				message += messagePrefix + " doesn't exist for this meeting. \r\n";
+			} else if (!employee.getEmployeeMeetings().isEmpty()) {
+				employee.removeMeeting(meeting);
+				message += messagePrefix + " successfully removed. \r\n";
+			}
+		}
+		if (message == null) {
+			return "No valid employees found.";
+		}
+		return message;
+	}
+
+}

@@ -1,0 +1,23 @@
+package meeting;
+
+import java.util.List;
+
+import org.joda.time.Interval;
+
+public class MeetingRoom {
+
+	String meetingRoomId;
+	List<MeetingInfo> meetingRoomInfo;
+	
+	public boolean verifyIntervalOverlap(Interval meetInterval) {
+		return false;
+	}
+	
+	public void addNewMeeting (Interval meetInterval, int organizerId) {
+		
+	}
+	
+	public MeetingInfo findMeetingToManage (String meetingId) {
+		return null;
+	}
+}

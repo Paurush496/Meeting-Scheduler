@@ -1,0 +1,38 @@
+package meeting;
+
+import java.util.List;
+
+import org.joda.time.Interval;
+
+public class MeetingRoom {
+
+	String meetingRoomId;
+	List<MeetingInfo> meetingRoomInfo;
+	
+	public boolean verifyIntervalOverlap(Interval meetInterval) {
+		for(int i=0; i<meetingRoomInfo.size(); i++) {
+			if (meetingRoomInfo.get(i).getMeetingInterval().overlaps(meetInterval))
+				return true;
+		}
+		return false;
+	}
+	
+	public String addNewMeeting (Interval meetInterval, int organizerId) {
+		String meetingId = meetingRoomId.concat(meetInterval.toString());
+		MeetingInfo newMeeting = new MeetingInfo(meetInterval, organizerId, meetingId);
+		meetingRoomInfo.add(newMeeting);
+		return meetingId;
+	}
+	
+	public String getMeetingRoomId() {
+		return meetingRoomId;
+	}
+
+	public List<MeetingInfo> getMeetingRoomInfo() {
+		return meetingRoomInfo;
+	}
+	
+	public MeetingInfo findMeetingToManage (String meetingId) {
+		return null;
+	}
+}

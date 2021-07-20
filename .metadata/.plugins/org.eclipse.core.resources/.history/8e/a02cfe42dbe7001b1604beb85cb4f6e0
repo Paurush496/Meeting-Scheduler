@@ -1,0 +1,10 @@
+package meeting;
+
+import org.joda.time.Interval;
+
+public class MeetingInfo {
+
+	Interval meetingInterval;
+	int organizerId;
+	String meetingId;
+}

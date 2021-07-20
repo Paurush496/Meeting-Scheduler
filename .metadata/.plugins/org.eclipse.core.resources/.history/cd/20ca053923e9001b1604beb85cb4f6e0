@@ -1,0 +1,125 @@
+package LaunchApplication;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.joda.time.DateTime;
+
+import employees.Employee;
+import meetManager.MeetScheduler;
+import meeting.MeetingInfo;
+import meeting.MeetingRoom;
+
+public class ManageInputOutput {
+	
+	static AppStorage storage;
+	static String consoleInput;
+	static String consoleOutput;
+	static java.io.BufferedReader stndin = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+	static DateTime startTime;
+	static DateTime endTime;
+
+	public static void processInput(String input, AppStorage data) throws IOException {
+		storage = data;
+		
+		switch(input) {
+		case "1":
+			bookNewMeeting();
+			break;
+		case "2":
+			findFreeTimeSlots();
+			break;
+		case "3":
+			printAllEmployees();
+			break;
+		case "4":
+			printAllMeetingRooms();
+			break;
+		default: break;
+		}
+		System.out.println(consoleOutput);	
+	}
+	
+	private static void bookNewMeeting() throws IOException {
+		int employeeId = 0;
+		System.out.println("Please Enter Employee Id of the Organizer: ");
+		System.out.flush();
+		if ((consoleInput = stndin.readLine()) != null) {
+			employeeId = Integer.valueOf(consoleInput).intValue();
+		}
+		System.out.println("Please Enter Start Time of the Meeting (in HH:mm): ");
+		System.out.flush();
+		if ((consoleInput = stndin.readLine()) != null) {
+			// Parsing the date
+			startTime = MeetingInfo.dtf.parseDateTime(consoleInput);
+		}
+		System.out.println("Start Time " + startTime.toString());
+		System.out.println("Please Enter End Time of the Meeting (in HH:mm): ");
+		System.out.flush();
+		if ((consoleInput = stndin.readLine()) != null) {
+			// Parsing the date
+			endTime = MeetingInfo.dtf.parseDateTime(consoleInput);
+		}
+		System.out.println("End Time " + endTime.toString());
+		consoleOutput = ((MeetScheduler) storage).organizeNewMeet(employeeId, startTime, endTime);
+	}
+	
+	private static void findFreeTimeSlots() throws IOException {
+		System.out.println("Please Enter comma separated Employee Ids: ");
+		System.out.flush();
+		int employeeIds[] = null;
+		if ((consoleInput = stndin.readLine()) != null) {
+			String[] stringEmpIds = consoleInput.split(",");
+			employeeIds = new int[stringEmpIds.length];
+			for (int i=0; i<stringEmpIds.length; i++) {
+				employeeIds[i] = Integer.valueOf(stringEmpIds[i]).intValue();
+			}
+		}
+		System.out.println("Please Enter Start Time of the Interval (in HH:mm): ");
+		System.out.flush();
+		if ((consoleInput = stndin.readLine()) != null) {
+			// Parsing the date
+			startTime = MeetingInfo.dtf.parseDateTime(consoleInput);
+		}
+		System.out.println("Start Time " + startTime.toString());
+		System.out.println("Please Enter End Time of the Interval (in HH:mm): ");
+		System.out.flush();
+		if ((consoleInput = stndin.readLine()) != null) {
+			// Parsing the date
+			endTime = MeetingInfo.dtf.parseDateTime(consoleInput);
+		}
+		System.out.println("End Time " + endTime.toString());
+		List<String> freeTimeSlots = ((MeetScheduler) storage).findFreeTimeSlots(employeeIds, startTime, endTime);
+		consoleOutput = "Free Time Slots: " + freeTimeSlots.toString();
+	}
+
+	private static void printAllEmployees() {
+		Employee[] allEmployees = storage.getAllEmployees();
+		String employeeString = "";
+		for (int i=0; i<allEmployees.length; i++) {
+			String employee = "[Employee " + allEmployees[i].getEmployeeId() + ": [";
+			List<MeetingInfo> meetings = allEmployees[i].getEmployeeMeetings();
+			for (int j=0; j<meetings.size(); j++) {
+				employee += meetings.get(j).toString();
+			}
+			employee += "]]" + "\r\n";
+			employeeString += employee;
+		}
+		consoleOutput = "All Employees: " + employeeString;
+	}
+
+	private static void printAllMeetingRooms() {
+		MeetingRoom[] allMeetings = storage.getAllMeetingRooms();
+		String meetingString = "";
+		for (int i=0; i<allMeetings.length; i++) {
+			String meetRoom = "[Meeting Room " + allMeetings[i].getMeetingRoomId() + ": [";
+			List<MeetingInfo> meetings = allMeetings[i].getMeetingRoomInfo();
+			for (int j=0; j<meetings.size(); j++) {
+				meetRoom += meetings.get(j).toString();
+			}
+			meetRoom += "]]" + "\r\n";
+			meetingString += meetRoom;
+		}
+		consoleOutput = "All Employees: " + meetingString;
+	}
+}
