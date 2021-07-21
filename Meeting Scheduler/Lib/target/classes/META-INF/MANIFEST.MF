@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Built-By: User
+Build-Jdk: 15.0.2
+Specification-Title: Joda-Time
+Specification-Version: 2.10
+Specification-Vendor: Joda.org
+Implementation-Version: 2.10.10
+Implementation-Vendor-Id: org.joda
+Implementation-Vendor: Joda.org
+Implementation-URL: https://www.joda.org/joda-time/
+Automatic-Module-Name: org.joda.time
+Created-By: Maven Integration for Eclipse
+Implementation-Title: org.joda.time
+Time-Zone-Database-Version: 2021a
+Package: org.joda.time
+Extension-Name: joda-time
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Joda.org
+Bundle-Name: Joda-Time
+Bundle-SymbolicName: joda-time
+Bundle-Version: 2.10.10
+Export-Package: org.joda.time;version=2.10.10,org.joda.time.base;version
+ =2.10.10,org.joda.time.chrono;version=2.10.10,org.joda.time.convert;ver
+ sion=2.10.10,org.joda.time.field;version=2.10.10,org.joda.time.format;v
+ ersion=2.10.10,org.joda.time.tz;version=2.10.10
+Bundle-License: Apache 2.0
+Bundle-DocURL: https://www.joda.org/joda-time/
+

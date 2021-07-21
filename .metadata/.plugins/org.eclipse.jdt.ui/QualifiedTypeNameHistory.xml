@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.joda.time.Interval"/>
+    <fullyQualifiedTypeName name="java.util.Collections"/>
+    <fullyQualifiedTypeName name="java.util.Comparator"/>
+    <fullyQualifiedTypeName name="java.util.Iterator"/>
+    <fullyQualifiedTypeName name="java.util.ListIterator"/>
+    <fullyQualifiedTypeName name="meetManager.AppStorage"/>
+    <fullyQualifiedTypeName name="employees.Employee"/>
+    <fullyQualifiedTypeName name="java.io.BufferedReader"/>
+    <fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+    <fullyQualifiedTypeName name="meetManager.MeetScheduler"/>
+    <fullyQualifiedTypeName name="org.joda.time.DateTime"/>
+    <fullyQualifiedTypeName name="org.joda.time.format.DateTimeFormatter"/>
+    <fullyQualifiedTypeName name="org.joda.time.format.DateTimeFormat"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="meeting.MeetingInfo"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="meeting.MeetingRoom"/>
+    <fullyQualifiedTypeName name="meetManager.ManageMeeting"/>
+</qualifiedTypeNameHistroy>
